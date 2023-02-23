@@ -1,0 +1,7 @@
+{
+  "name": "capacitor-ocr-example",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
