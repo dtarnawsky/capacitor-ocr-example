@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Ocr, TextDetections } from 'capacitor-ocr';
+import { Ocr, TextDetections } from '@capacitor-community/image-to-text';
 
 @Component({
   selector: 'app-home',
