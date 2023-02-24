@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Ocr, TextDetections } from 'capacitor-ocr';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +10,41 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  imgSrc: SafeUrl | undefined;
+  lines: string[] = [];
+  constructor(private sanitizer: DomSanitizer) { }
+
+  async takePic() {
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: true,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera,
+        presentationStyle: 'popover'
+      });
+      const imageUrl = photo.webPath;
+      if (!imageUrl) return;
+      this.imgSrc = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+      const path = photo.path;
+      if (!path) return;
+      this.lines = await this.processImage(path);
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  async processImage(filename: string): Promise<string[]> {
+    const data: TextDetections = await Ocr.detectText({ filename });
+    // or with orientation -
+    // const textDetections = await td.detectText(imageFile.path!, ImageOrientation.Up)
+
+    console.log(data);
+    const result: string[] = [];
+    for (let detection of data.textDetections) {
+      result.push(`${detection.text} (${detection.bottomLeft},${detection.bottomRight},${detection.topLeft},${detection.topRight})`);
+    }
+    return result;
+  }
 
 }

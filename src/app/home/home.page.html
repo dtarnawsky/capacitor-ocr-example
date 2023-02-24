@@ -14,7 +14,11 @@
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <ion-list>
+      <ion-item *ngFor="let line of lines">{{line}}</ion-item>
+    </ion-list>
+    <ion-button (click)="takePic()">Take Picture</ion-button>
+    <br/>
+    <img [src]="imgSrc" />
   </div>
 </ion-content>
