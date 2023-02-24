@@ -1,24 +1,31 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Text Recognition
     </ion-title>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Text Recognition</ion-title>
     </ion-toolbar>
   </ion-header>
-
   <div id="container">
-    <ion-list>
-      <ion-item *ngFor="let line of lines">{{line}}</ion-item>
-    </ion-list>
-    <ion-button (click)="takePic()">Take Picture</ion-button>
-    <br/>
     <img [src]="imgSrc" />
   </div>
+  <ion-list [inset]="true">
+    <ion-item *ngIf="message">{{message}}</ion-item>
+    <ion-list-header *ngIf="lines.length > 0">
+      <ion-label>Found Text</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let line of lines">{{line}}</ion-item>
+  </ion-list>
+  <ion-fab style="margin-bottom:80px" slot="fixed" horizontal="center" vertical="bottom">
+    <ion-fab-button [disabled]="busy" (click)="takePic()">
+      <ion-icon name="camera-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

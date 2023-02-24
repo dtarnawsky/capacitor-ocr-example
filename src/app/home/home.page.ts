@@ -12,16 +12,19 @@ export class HomePage {
 
   imgSrc: SafeUrl | undefined;
   lines: string[] = [];
+  message: string = '';
+  busy = false;
+
   constructor(private sanitizer: DomSanitizer) { }
 
   async takePic() {
     try {
+      this.busy = true;
       const photo = await Camera.getPhoto({
         quality: 90,
         allowEditing: true,
         resultType: CameraResultType.Uri,
-        source: CameraSource.Camera,
-        presentationStyle: 'popover'
+        source: CameraSource.Camera        
       });
       const imageUrl = photo.webPath;
       if (!imageUrl) return;
@@ -31,19 +34,23 @@ export class HomePage {
       this.lines = await this.processImage(path);
     } catch (err) {
       alert(err);
+    } finally {
+      this.busy = false;
     }
   }
 
   async processImage(filename: string): Promise<string[]> {
     const data: TextDetections = await Ocr.detectText({ filename });
     // or with orientation -
-    // const textDetections = await td.detectText(imageFile.path!, ImageOrientation.Up)
+    // const textDetections = await td.detectText({ filename, orientation: ImageOrientation.Up })
 
     console.log(data);
     const result: string[] = [];
     for (let detection of data.textDetections) {
-      result.push(`${detection.text} (${detection.bottomLeft},${detection.bottomRight},${detection.topLeft},${detection.topRight})`);
+      result.push(detection.text); 
+      //`${detection.text} (${detection.bottomLeft},${detection.bottomRight},${detection.topLeft},${detection.topRight})`);
     }
+    this.message = result.length === 0 ? 'No text was detected' : '';
     return result;
   }
 
